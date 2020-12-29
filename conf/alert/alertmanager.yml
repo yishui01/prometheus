@@ -1,0 +1,51 @@
+
+# 本配置文件主要用于设置警报接收者以及通知方式
+
+global:
+  # 在没有报警的情况下声明为已解决的时间，就是5分钟内这个指标都没出现异常时，标记为解决
+  resolve_timeout: 5m
+  # 配置邮件SMTP服务器信息
+  smtp_smarthost: 'smtp.163.com:25'
+  smtp_from: 'ych_1024@163.com'
+  smtp_auth_username: 'ych_1024@163.com'
+  smtp_auth_password: '<邮箱密码>'
+  smtp_hello: '163.com'
+  smtp_require_tls: false
+
+
+# 所有报警信息进入后的根路由，用来设置报警的分发策略
+route:
+  #按照报警信息里的label进行group by，和sql里的group by分组效果一样，
+  #例如，接收到的报警信息里面有许多具有 cluster=A 这样的标签的报警信息将会批量被聚合到一个分组里面
+  group_by: ['cluster']
+  # 当一个新的报警分组被创建后，需要等待至少group_wait时间来初始化通知，这种方式可以确保您能有足够的时间为同一分组来获取多个警报，然后一起触发这个报警信息。
+  group_wait: 10s
+  # 当第一个报警发送后，等待'group_interval'时间来发送新的一组报警信息。
+  group_interval: 10s #组报警间隔时间
+  # 如果一个报警信息已经发送成功了，等待'repeat_interval'时间来重新发送他们
+  repeat_interval: 1m
+  receiver: 'test.hook'
+
+
+# 警报接收者
+receivers:
+   - name: 'test.hook'
+     webhook_configs:
+        - url: 'http://192.168.33.10:8081/test'
+          send_resolved: true
+
+# - name: 'test.mail'
+#    email_configs:
+#      - to: 'xxxxx@163.com'  #163邮箱
+#        html: '{{ template "test.html" . }}' # 设定邮箱的内容模板
+#        headers: { Subject: "[WARN] 报警邮件"} # 接收邮件的标题
+
+
+# 警告抑制规则
+# 一个inhibition规则是在与另一组匹配器匹配的警报存在的条件下，使匹配一组匹配器的警报失效的规则。两个警报必须具有一组相同的标签。
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'dev', 'instance']

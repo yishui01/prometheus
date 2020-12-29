@@ -1,0 +1,39 @@
+
+# 本配置文件主要用来设置 prometheus 的抓取节点
+
+global:
+  scrape_interval:     15s # 设置默认拉取时间间隔为15秒
+  evaluation_interval: 15s # 报警规则验证间隔
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ["172.23.0.6:9093"]
+
+#指定报警规则配置文件，prometheus会根据这个文件里的规则扫描对应的指标，并在必要时刻报警给Alertmanager
+rule_files:
+  - "/etc/prometheus/rules.yml"
+
+# 抓取节点配置
+scrape_configs:
+  #自定义抓取任务名称，一个任务下可以有多个target地址
+  #这个配置是表示在这个配置内的时间序例，每一条都会自动添加上这个{job_name:"prometheus"}的标签  - job_name: 'prometheus' 方便查询和筛选
+  - job_name: 'prometheus_self'
+    scrape_interval: 5s # 抓取间隔
+    static_configs: # 抓取地址
+      - targets: ['localhost:9090']
+      # - targets: ['localhost:9090']
+
+  # node_export地址
+  - job_name: 'node_export'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['172.23.0.8:9100']
+
+  # push_gateway地址
+  - job_name: 'push_gateway'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['172.23.0.7:9091']

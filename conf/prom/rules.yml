@@ -1,0 +1,44 @@
+
+# 本配置文件主要用来设置 prometheus 的抓取地址
+
+groups:
+  - name: operations
+    rules:
+      - alert: test_rule
+        expr: go_gc_duration_seconds > 150 # 这个go_gc_duration_seconds是某一个指标名称
+        #满足条件，且超过了 for 子句中的的指定持续时间5m，那就触发报警，
+        #如果没有设置 for 子句，一旦检测到这个指标满足上面的expr表达式，直接触发警报
+        for: 5m
+
+        # 给改报警信息加上自定义标签或者覆盖某些标签
+        labels:
+          status_test_label: High
+
+        # 用来设置有关警报的一组描述信息，其中包括自定义的标签，以及expr计算后的值， 这些信息最后会被写入到报警通知中
+        #{{ $lable.<lablename>}} 可以获取当前警报实例中的指定标签值
+        #{{ $value }} 变量可以获取当前PromQL表达式的计算样本值。
+        annotations:
+          description: "Environment: {{ $labels.env }} ,The service {{ $labels.job }} instance {{ $labels.instance }} is
+            not responding for more than 50% of the time for 5 minutes. "
+          value: '{{ $value }}'
+          summary: "The service {{ $labels.job }} is not responding"
+
+
+#      - alert: test_rule222
+#          expr: go_gc_duration_seconds > 200 # 这个go_gc_duration_seconds是某一个指标名称
+#          #满足条件，且超过了 for 子句中的的指定持续时间5m，那就触发报警，
+#          #如果没有设置 for 子句，一旦检测到这个指标满足上面的expr表达式，直接触发警报
+#          for: 5m
+#
+#          # 给改报警信息加上自定义标签或者覆盖某些标签
+#          labels:
+#            status_test_label: High
+#
+#          # 用来设置有关警报的一组描述信息，其中包括自定义的标签，以及expr计算后的值， 这些信息最后会被写入到报警通知中
+#          #{{ $lable.<lablename>}} 可以获取当前警报实例中的指定标签值
+#          #{{ $value }} 变量可以获取当前PromQL表达式的计算样本值。
+#          annotations:
+#            description: "Environment: {{ $labels.env }} ,The service {{ $labels.job }} instance {{ $labels.instance }} is
+#                  not responding for more than 50% of the time for 5 minutes. "
+#            value: '{{ $value }}'
+#            summary: "The service {{ $labels.job }} is not responding"
