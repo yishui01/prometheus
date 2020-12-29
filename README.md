@@ -13,7 +13,7 @@
 │   │   ├── htpasswd -- nginx访问密码文件<br>
 │   │   └── nginx.conf<br>
 │   └── prom<br>
-│       ├── prometheus.yml    -- prometheus配置文件，配置prometheus抓取地址、抓取时间间隔<br>
+│       ├── prometheus.yml    -- prometheus配置文件，配置prometheus job_name（job_name一旦定下则不能修改，否则grafana展示会报single table错）、抓取地址、抓取时间间隔<br>
 │       └── rules.yml         -- prometheus监控规则文件，配置指标监控规则，以及指标监控间隔时间<br>
 ├── data<br>
 │   ├── grafana        -- grafana 数据挂载卷<br>
@@ -26,8 +26,13 @@
 ### 部署步骤
 1、安装docker（如果已安装 docker 则跳过）
 ```
-curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
+使用一键安装命令
+curl -sSL https://get.daocloud.io/docker | sh
+
+如果实在装不了docker，那就用二进制安装
+https://www.cnblogs.com/tchua/p/11102462.html
 ```
+
 
 2、配置docker镜像源（如果已安装 docker 则跳过）
 ```
@@ -127,6 +132,11 @@ chmod -R 777 ./data && docker-compose up &
 再修改conf/prom/prometheus.yml配置要抓取的target节点地址，重启prometheus容器，
 即可被prometheus抓取（在prometheus面板中可以看到当前抓取的节点）
 
+- 启动node export， dashboard 编号 8919
+```
+docker run -d --restart=always --name node-exporter -p 9100:9100  prom/node-exporter
+``` 
+
 - 启动mysql export， dashboard 编号 7362
 ```
 docker run -d --restart=always --name mysqld-exporter -p 9104:9104   -e DATA_SOURCE_NAME="root:123456@(192.168.33.10:3306)/"   prom/mysqld-exporter
@@ -147,12 +157,12 @@ docker run --restart=always -d -p 9113:9113 nginx/nginx-prometheus-exporter:0.8.
 
 - 启动elasticsearch export dashboard 编号 6483
 ```
-docker run --restart=always -d -p 9114:9114 justwatch/elasticsearch_exporter:1.1.0 -es.uri=http://elasticsearch:9200
+docker run --restart=always -d -p 9114:9114 justwatch/elasticsearch_exporter:1.1.0 --es.uri=http://elasticsearch:9200
 ```
 
-- 启动mongodb export  dashboard 编号 2583
+- 启动mongodb export  dashboard 编号 2583,不过这个需要修改下json文件，修改后的图表在graph_json/MongoDB-xxx.json中,导入该json即可
 ```
-docker run --restart=always -d -p 9104:9104 eses/mongodb_exporter:1.1.0 -mongodb.uri=mongodb://localhost:27017 -auth.user=admin --auth.pass=123456
+docker run --restart=always -d -p 9216:9216 fmet/mongodb_exporter:0.10.0 --mongodb.uri=mongodb://10.10.1.178:27017
 ```
 
 - 启动rabbitmq export  dashboard 编号 4279

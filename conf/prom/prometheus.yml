@@ -26,14 +26,46 @@ scrape_configs:
       - targets: ['localhost:9090']
       # - targets: ['localhost:9090']
 
-  # node_export地址
-  - job_name: 'node_export'
+  ########## node_export ####################
+  - job_name: 'dev环境'
     scrape_interval: 10s
     static_configs:
-      - targets: ['172.23.0.8:9100']
+      - targets: ['10.10.1.178:9100','10.10.1.188:9100', '10.10.1.21:9100']
+
+  - job_name: 'test环境'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['121.196.125.9:9100']
+
+  ############ mysql export #######################
+  - job_name: 'mysql-dev'
+    scrape_interval: 10s
+    static_configs:
+      #- targets: ['10.10.1.178:9104','10.10.1.188:9104','10.10.1.21:9104']
+      - targets: ['10.10.1.178:9104']
+
+  ############ redis export #######################
+  - job_name: 'redis-dev'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['10.10.1.178:9121']
+
+  ############  elasticsearch export ###############
+  - job_name: 'es-dev'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['10.10.1.178:9114','10.10.1.178:9113']
+
+  ############  mongodb export ###############
+  - job_name: 'mongo-dev'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['10.10.1.178:9104']
+
 
   # push_gateway地址
   - job_name: 'push_gateway'
     scrape_interval: 10s
     static_configs:
       - targets: ['172.23.0.7:9091']
+
