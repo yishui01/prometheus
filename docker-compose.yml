@@ -15,8 +15,8 @@ services:
       - "${NGINX_HTTPS_PORT}:443"
     volumes:
       - ./data/nginx:/app:rw
-      - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./conf/nginx/conf.d/vhost:/etc/nginx/conf.d/vhost:rw
+      - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./log/nginx:/var/log/nginx:rw
       - ./conf/nginx/htpasswd:/etc/nginx/htpasswd:rw
     restart: always
