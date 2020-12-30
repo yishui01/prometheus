@@ -6,6 +6,7 @@ services:
     environment:
       TZ: "Asia/Shanghai"
       LANG: C.UTF-8
+    privileged: true
     ports:
       - "3001:3001" # prometheus
       - "3002:3002" # grafana
@@ -26,6 +27,7 @@ services:
 
   prometheus:
     image: prom/prometheus:${PROME_VERSION}
+    privileged: true
     volumes:
       - ${PROME_YML}:/etc/prometheus/prometheus.yml
       - ${PROME_RULES_YML}:/etc/prometheus/rules.yml
@@ -41,6 +43,7 @@ services:
 
   grafana:
     image: grafana/grafana:${GRAFANA_VERSION}
+    privileged: true
     ports:
       - "${GRAFANA_PORT}:3000"
     restart: "always"
@@ -57,6 +60,7 @@ services:
 
   alertmanager:
     image: prom/alertmanager:${ALERTMANAGER_VERSION}
+    privileged: true
     restart: "always"
     volumes:
       - ${ALERTMANAGER_YML}:/etc/alertmanager/alertmanager.yml
@@ -69,6 +73,7 @@ services:
 
   pushgateway:
     image: prom/pushgateway:${PUSHGATEWAY_VERSION}
+    privileged: true
     restart: "always"
     ports:
       - "${PUSHGATEWAY_PORT}:9091"
@@ -79,6 +84,7 @@ services:
 
   node-exporter:
     image: prom/node-exporter:${NODE_EXTPORT_VERSION}
+    privileged: true
     restart: "always"
     ports:
       - "${NODE_EXTPORT_PORT}:9100"
