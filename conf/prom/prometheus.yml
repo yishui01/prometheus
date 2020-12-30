@@ -27,12 +27,12 @@ scrape_configs:
       # - targets: ['localhost:9090']
 
   ########## node_export ####################
-  - job_name: 'dev环境'
+  - job_name: 'node-dev'
     scrape_interval: 10s
     static_configs:
       - targets: ['10.10.1.178:9100','10.10.1.188:9100', '10.10.1.21:9100']
 
-  - job_name: 'test环境'
+  - job_name: 'node-test'
     scrape_interval: 10s
     static_configs:
       - targets: ['121.196.125.9:9100']
