@@ -74,7 +74,10 @@ cp ./.env.example ./.env
 
 5、设置挂载目录权限并启动docker-compose
 ```
-chmod -R 777 ./data && docker-compose up &
+chmod -R 777 ./data && docker-compose up
+
+如果启动后有报错，ctrl+C结束，再启动一次即可
+最后直接关闭xshell终端，不要ctrl+C结束进程，该进程会自动变为守护进程
 ```
 
 6、通过nginx代理访问面板,
