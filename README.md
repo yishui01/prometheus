@@ -140,7 +140,7 @@ chmod -R 777 ./data && docker-compose up
 docker run -d --restart=always --name node-exporter -p 9100:9100  prom/node-exporter
 ``` 
 
-- 启动mysql export， dashboard 编号 7362
+- 启动mysql export， dashboard 编号 7362, mysql监控建议使用telegraf收集数据,在telegraf.conf的inputs.mysql中配置，再在prometheus.yml中抓取在telegraf暴露的http端口即可
 ```
 docker run -d --restart=always --name mysqld-exporter -p 9104:9104   -e DATA_SOURCE_NAME="root:123456@(192.168.33.10:3306)/"   prom/mysqld-exporter
 ``` 

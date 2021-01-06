@@ -70,6 +70,20 @@ services:
       prom:
         ipv4_address: ${ALERTMANAGER_IPV4}
 
+  telegraf:
+    image: telegraf:${TELEGRAF_VERSION}
+    privileged: true
+    restart: "always"
+    volumes:
+    - ${TELEGRAF_CONF}:/etc/telegraf/telegraf.conf:ro
+    ports:
+      - "${TELEGRAF_PORT_HTTP}:9273"
+#      - "${TELEGRAF_PORT_STAT}:8125"
+#      - "${TELEGRAF_PORT_TCP}:8094"
+#      - "${TELEGRAF_PORT_UDP}:8092"
+    networks:
+      prom:
+        ipv4_address: ${TELEGRAF_IPV4}
 
   pushgateway:
     image: prom/pushgateway:${PUSHGATEWAY_VERSION}

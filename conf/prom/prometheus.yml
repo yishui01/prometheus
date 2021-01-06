@@ -42,7 +42,7 @@ scrape_configs:
     scrape_interval: 10s
     static_configs:
       #- targets: ['10.10.1.178:9104','10.10.1.188:9104','10.10.1.21:9104']
-      - targets: ['10.10.1.178:9104']
+      - targets: ['10.10.1.178:9273']
 
   ############ redis export #######################
   - job_name: 'redis-dev'
@@ -60,7 +60,7 @@ scrape_configs:
   - job_name: 'mongo-dev'
     scrape_interval: 10s
     static_configs:
-      - targets: ['10.10.1.178:9104']
+      - targets: ['10.10.1.178:9216']
 
 
   # push_gateway地址
